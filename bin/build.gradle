@@ -1,0 +1,47 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
+    }
+}
+plugins {
+  id 'com.github.johnrengelman.shadow' version '7.1.2'
+  id 'groovy'
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+ext {
+  groovyVersion = '4.0.15'
+}
+
+dependencies {
+    implementation 'org.apache.groovy:groovy:4.0.15'
+    implementation 'org.apache.groovy:groovy-all:4.0.15'
+}
+
+// config {
+//     ast(groovy.transform.CompileStatic)
+//     ast(groovy.transform.TypeChecked)
+// }
+
+jar.doFirst {
+  def x = configurations.runtimeClasspath.files.collect { it.getName() }.join(' ')
+  manifest {
+    attributes(
+      'Class-Path': x,
+      'Main-Class': 'example.Main',
+      'Implementation-Title': project.name,
+      'Implementation-Version': project.version
+    )
+  }
+}
